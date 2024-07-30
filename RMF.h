@@ -20,11 +20,6 @@ protected:
     AddressType const m_address;
     std::string_view const m_name;
 protected:
-    constexpr explicit BRFBase(AddressType const address, std::string_view name)
-        : m_parent(nullptr)
-        , m_address(address)
-        , m_name(name)
-    {}
     constexpr explicit BRFBase(ParentType const* parent, AddressType const offset, std::string_view name)
         : m_parent(parent)
         , m_address((m_parent ? m_parent->address() : 0) + offset)
@@ -66,9 +61,6 @@ template <ValidAddressOrDataType AType, ValidAddressOrDataType DType>
 struct Block : public BRFBase<AType, DType, Block<AType, DType>>
 {
 public:
-    constexpr explicit Block(AType const address, std::string_view name)
-        : BRFBase<AType, DType, Block<AType, DType>>(address, name)
-    {}
     constexpr explicit Block(Block<AType, DType> const* parent, AType const offset, std::string_view name)
         : BRFBase<AType, DType, Block<AType, DType>>(parent, offset, name)
     {}
@@ -78,9 +70,6 @@ template <ValidAddressOrDataType AType, ValidAddressOrDataType DType>
 struct Register : public BRFBase<AType, DType, Block<AType, DType>>
 {
 public:
-    constexpr explicit Register(AType const address, std::string_view name)
-        : BRFBase<AType, DType, Block<AType, DType>>(address, name)
-    {}
     constexpr explicit Register(Block<AType, DType> const* parent, AType const offset, std::string_view name)
         : BRFBase<AType, DType, Block<AType, DType>>(parent, offset, name)
     {}
