@@ -33,7 +33,7 @@ It provides functionality common to all three:
 - name
 
 Accessors:
-- `constexpr ParentType const* parent() const` returns a pointer to the parent object (if unparented, returns nullptr, so make sure to check that in generic code)  
+- `constexpr ParentType const* parent() const` returns a pointer to the parent object (if unparented, returns nullptr, so make sure to check that in generic code)
     The `ParentType` is specific to the subclass:
     Blocks have Blocks as parents, Registers have Blocks as parents, and Fields have Registers as parents.
 - `constexpr AddressType address() const` returns the absolute address of the block or register (and for fields, returns the address of the containing register)
@@ -91,11 +91,11 @@ Fields provide a number of accessors to help manipulate registers:
 - `constexpr uint8_t size() const` returns the width of the field (in bits)
 - `constexpr DType dataMask() const` returns a mask that can be used to mask field-aligned data values, ie, for a 5-bit field, this would return `0x1F`
 - `constexpr DType regMask() const` returns a mask that can be used to mask register-aligned data values, ie, for a 5-bit field with an offset of 3, this would return `0xF8`
-- `constexpr DType extract(DType const reg_val) const` is given the value of the whole containing register and returns just the field value, shifted down to bit 0  
+- `constexpr DType extract(DType const reg_val) const` is given the value of the whole containing register and returns just the field value, shifted down to bit 0
     Equivalent to `(reg_val >> offset()) & dataMask()`
-- `constexpr DType regVal(DType val) const` is given the value of the field and returns that field inserted into the proper position  
+- `constexpr DType regVal(DType val) const` is given the value of the field and returns that field inserted into the proper position
     Equivalent to `(val & dataMask()) << offset()`
-- `constexpr void insert(DType& reg_val, DType val) const` is given the value of the field and a reference to the register value and overwrites the field's position with the supplied data  
+- `constexpr void insert(DType& reg_val, DType val) const` is given the value of the field and a reference to the register value and overwrites the field's position with the supplied data
     Equivalent to `reg_val = reg_val & ~regMak() | regVal(val)`
 
 Subclasses should provide constructors consistent with the `RMF::Field` constructor:

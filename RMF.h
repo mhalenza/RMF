@@ -105,7 +105,7 @@ public:
     {
         return this->dataMask() << this->m_field_offset;
     }
-    
+
     constexpr DType extract(DType const reg_val) const
     {
         return (reg_val >> this->m_field_offset) & this->dataMask();
