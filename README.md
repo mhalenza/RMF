@@ -42,6 +42,11 @@ Accessors:
 - `constexpr operator std::string_view() const` same as `name()` but as an operator overload
 - `constexpr std::string fullName() const` returns the full "path" to the block/register/field: it traverses up the parent chain, grabs the name from each object and concatenates them all with '.'
 
+By default, Block, Register, and Field all are implicitly convertible to AddressType.
+This is to ease integration into register access mechanisms that only take integral inputs (AddressType).
+However, if using a smart framework (such as RTF) this may be undesirable as the implicit conversion may pick the wrong function overload.
+The solution in this case is to define `RMF_EXPLICIT_ADDRESSTYPE_CONVERSION_OPERATOR` which marks the conversion operator as explicit.
+
 ### Block
 `RMF::Block` provides a base class for blocks / maps.
 

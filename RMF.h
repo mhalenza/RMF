@@ -34,7 +34,11 @@ public:
     {
         return this->m_address;
     }
+    #ifdef RMF_EXPLICIT_ADDRESSTYPE_CONVERSION_OPERATOR
+    constexpr explicit operator AddressType() const
+    #else
     constexpr operator AddressType() const
+    #endif
     {
         return this->m_address;
     }
