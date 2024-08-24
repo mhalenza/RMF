@@ -1,3 +1,5 @@
+// Copyright (c) 2024 Matt M Halenza
+// SPDX-License-Identifier: MIT
 #pragma once
 #include <string>
 #include <string_view>
