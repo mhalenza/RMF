@@ -1,6 +1,7 @@
 // Copyright (c) 2024 Matt M Halenza
 // SPDX-License-Identifier: MIT
 #pragma once
+#include <optional>
 #include <string>
 #include <string_view>
 #include <type_traits>
@@ -87,11 +88,19 @@ struct Field : public BRFBase<AType, DType, Register<AType, DType>>
 private:
     uint8_t const m_field_offset;
     uint8_t const m_size;
+    std::optional<uint8_t> const m_load_bit;
 public:
     constexpr explicit Field(Register<AType, DType> const* parent, uint8_t const offset, uint8_t const size, std::string_view name)
         : BRFBase<AType, DType, Register<AType, DType>>(parent, 0, name)
         , m_field_offset(offset)
         , m_size(size)
+        , m_load_bit(std::nullopt)
+    {}
+    constexpr explicit Field(Register<AType, DType> const* parent, uint8_t const offset, uint8_t const size, uint8_t const load_bit, std::string_view name)
+        : BRFBase<AType, DType, Register<AType, DType>>(parent, 0, name)
+        , m_field_offset(offset)
+        , m_size(size)
+        , m_load_bit(load_bit)
     {}
 
     constexpr uint8_t offset() const
@@ -101,6 +110,10 @@ public:
     constexpr uint8_t size() const
     {
         return this->m_size;
+    }
+    constexpr std::optional<uint8_t> loadBit() const
+    {
+        return this->m_load_bit;
     }
 
     constexpr DType dataMask() const
@@ -112,7 +125,11 @@ public:
     }
     constexpr DType regMask() const
     {
-        return this->dataMask() << this->m_field_offset;
+        DType rm = this->dataMask() << this->m_field_offset;
+        if (this->m_load_bit){
+            rm |= (1ULL << this->m_load_bit.value());
+        }
+        return rm;
     }
 
     constexpr DType extract(DType const reg_val) const
@@ -121,12 +138,19 @@ public:
     }
     constexpr DType regVal(DType val) const
     {
-        return (val & this->dataMask()) << this->m_field_offset;
+        DType rv = (val & this->dataMask()) << this->m_field_offset;
+        if (this->m_load_bit){
+            rv |= (1ULL << this->m_load_bit.value());
+        }
+        return rv;
     }
     constexpr void insert(DType& reg_val, DType val) const
     {
         reg_val &= ~this->regMask();
         reg_val |= this->regVal(val);
+        if (this->m_load_bit){
+            reg_val |= (1ULL << this->m_load_bit.value());
+        }
     }
 };
 
