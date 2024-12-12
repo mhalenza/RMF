@@ -103,7 +103,13 @@ Fields provide a number of accessors to help manipulate registers:
 - `constexpr void insert(DataType& reg_val, DataType val) const` is given the value of the field and a reference to the register value and overwrites the field's position with the supplied data
     Equivalent to `reg_val = reg_val & ~regMak() | regVal(val)`
 
-Subclasses should provide constructors consistent with the `RMF::Field` constructor:
+Subclasses should provide constructors consistent with one of the `RMF::Field` constructors:
 ```c++
 constexpr explicit Field(::RMF::Register<AddressType, DataType> const* parent, uint8_t const offset, uint8_t const size, std::string_view name) : Register(parent, offset, size, name) {}
+constexpr explicit Field(::RMF::Register<AddressType, DataType> const* parent, uint8_t const offset, uint8_t const size, uint8_t const load_enable_bit, std::string_view name) : Register(parent, offset, size, load_enable_bit, name) {}
 ```
+
+Field also supports "Load Enable Bits", which are special bits in the register that must be set in order to modify the field.
+If a write happens when the load enable bit is *not* set, the assocaited field will not be modified.
+
+When a Field has a load enable bit, it will be set in calls to `insert()`, `regVal()` and `regMask()`, making them transparent to Software users.
