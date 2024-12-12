@@ -94,13 +94,13 @@ Fields provide a number of accessors to help manipulate registers:
 
 - `constexpr uint8_t offset() const` returns the offset within the register (the bit position of the Least Significant Bit)
 - `constexpr uint8_t size() const` returns the width of the field (in bits)
-- `constexpr DType dataMask() const` returns a mask that can be used to mask field-aligned data values, ie, for a 5-bit field, this would return `0x1F`
-- `constexpr DType regMask() const` returns a mask that can be used to mask register-aligned data values, ie, for a 5-bit field with an offset of 3, this would return `0xF8`
-- `constexpr DType extract(DType const reg_val) const` is given the value of the whole containing register and returns just the field value, shifted down to bit 0
+- `constexpr DataType dataMask() const` returns a mask that can be used to mask field-aligned data values, ie, for a 5-bit field, this would return `0x1F`
+- `constexpr DataType regMask() const` returns a mask that can be used to mask register-aligned data values, ie, for a 5-bit field with an offset of 3, this would return `0xF8`
+- `constexpr DataType extract(DataType const reg_val) const` is given the value of the whole containing register and returns just the field value, shifted down to bit 0
     Equivalent to `(reg_val >> offset()) & dataMask()`
-- `constexpr DType regVal(DType val) const` is given the value of the field and returns that field inserted into the proper position
+- `constexpr DataType regVal(DataType val) const` is given the value of the field and returns that field inserted into the proper position
     Equivalent to `(val & dataMask()) << offset()`
-- `constexpr void insert(DType& reg_val, DType val) const` is given the value of the field and a reference to the register value and overwrites the field's position with the supplied data
+- `constexpr void insert(DataType& reg_val, DataType val) const` is given the value of the field and a reference to the register value and overwrites the field's position with the supplied data
     Equivalent to `reg_val = reg_val & ~regMak() | regVal(val)`
 
 Subclasses should provide constructors consistent with the `RMF::Field` constructor:
