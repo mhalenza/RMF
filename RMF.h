@@ -105,7 +105,10 @@ public:
 
     constexpr DType dataMask() const
     {
-        return ((1 << this->m_size) - 1);
+        if (this->m_size == sizeof(DType) * 8)
+            return ~0;
+        else
+            return ((1 << this->m_size) - 1);
     }
     constexpr DType regMask() const
     {
